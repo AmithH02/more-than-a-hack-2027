@@ -251,6 +251,25 @@ class Match:
     # Smart Tagging: inferred, noisy, and its phases overlap.
 
     @property
+    def team_names(self):
+        """(home name, away name) as the ATD metadata gives them; Smart Tagging uses the same."""
+        if getattr(self, "_team_names", None) is None:
+            self._team_names = read_teams(games.asset_paths(
+                data_dir=self.data_dir, source=SOURCE)["atd_meta"])[0]
+        return self._team_names
+
+    @property
+    def smart_tagging_events(self):
+        """[{code, start_frame, end_frame, tags}] as the organisers' loader gives them, frames
+        half-open, in file order. Overlapping phases stay separate here, unlike the painted items."""
+        if getattr(self, "_smart_tagging_events", None) is None:
+            from starter import load_smart_tagging  # organisers' loader: imported, never edited
+            path = games.asset_paths(data_dir=self.data_dir, source=SOURCE)["smart_tagging"]
+            self._smart_tagging_events = load_smart_tagging.load(
+                data_dir=os.path.dirname(os.path.dirname(path)))
+        return self._smart_tagging_events
+
+    @property
     def smart_tagging_codes(self):
         """(k,) str: Smart Tagging codes, sorted; set pieces split by type ("SET PIECES: Throw-in")."""
         return self.item("smart_tagging")["codes"]

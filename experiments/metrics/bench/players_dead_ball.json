@@ -1,0 +1,394 @@
+{
+  "train": {
+    "macro_f1": 0.7573887247691492,
+    "per_match": [
+      {
+        "alive_dead_f1": 0.8909306792821131,
+        "degraded": "v2/seed0",
+        "macro_f1": 0.7594049162427453,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 414.0,
+        "spell_f1_mean": 0.3365517241379311,
+        "team_acc_both_alive": 0.7966451756956655
+      },
+      {
+        "alive_dead_f1": 0.8921654302164872,
+        "degraded": "v2/seed1",
+        "macro_f1": 0.7510512577301837,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 436.0,
+        "spell_f1_mean": 0.3174887892376682,
+        "team_acc_both_alive": 0.781062869051754
+      },
+      {
+        "alive_dead_f1": 0.9016187084490382,
+        "degraded": "v2/seed2",
+        "macro_f1": 0.7617100003345185,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 418.0,
+        "spell_f1_mean": 0.31304347826086953,
+        "team_acc_both_alive": 0.7807290789695235
+      }
+    ],
+    "regime": "degraded v2 seeds [0, 1, 2]",
+    "settings": {
+      "dead_at": null,
+      "live_after_s": 0,
+      "still_dead_s": 3.0
+    },
+    "spell_f1_mean": 0.3223613305454896,
+    "split": "val",
+    "train_grid": [
+      {
+        "macro_f1": 0.6545605934459552,
+        "settings": {
+          "dead_at": null,
+          "live_after_s": 0,
+          "still_dead_s": null
+        },
+        "spell_f1_mean": 0.2975944083925594
+      },
+      {
+        "macro_f1": 0.653380762748749,
+        "settings": {
+          "dead_at": null,
+          "live_after_s": 3,
+          "still_dead_s": null
+        },
+        "spell_f1_mean": 0.2972738222218357
+      },
+      {
+        "macro_f1": 0.7754362665431888,
+        "settings": {
+          "dead_at": null,
+          "live_after_s": 0,
+          "still_dead_s": 3.0
+        },
+        "spell_f1_mean": 0.32892310333618313
+      },
+      {
+        "macro_f1": 0.7720581784348702,
+        "settings": {
+          "dead_at": null,
+          "live_after_s": 3,
+          "still_dead_s": 3.0
+        },
+        "spell_f1_mean": 0.32835984022344067
+      },
+      {
+        "macro_f1": 0.6897209869798746,
+        "settings": {
+          "dead_at": 1.0,
+          "live_after_s": 0,
+          "still_dead_s": null
+        },
+        "spell_f1_mean": 0.3040861321095865
+      },
+      {
+        "macro_f1": 0.6886072450436539,
+        "settings": {
+          "dead_at": 1.0,
+          "live_after_s": 3,
+          "still_dead_s": null
+        },
+        "spell_f1_mean": 0.30359864545508686
+      },
+      {
+        "macro_f1": 0.7773996266784953,
+        "settings": {
+          "dead_at": 1.0,
+          "live_after_s": 0,
+          "still_dead_s": 3.0
+        },
+        "spell_f1_mean": 0.32817210995336804
+      },
+      {
+        "macro_f1": 0.7740785421594768,
+        "settings": {
+          "dead_at": 1.0,
+          "live_after_s": 3,
+          "still_dead_s": 3.0
+        },
+        "spell_f1_mean": 0.3275720875652446
+      },
+      {
+        "macro_f1": 0.6952386619747166,
+        "settings": {
+          "dead_at": 1.2,
+          "live_after_s": 0,
+          "still_dead_s": null
+        },
+        "spell_f1_mean": 0.3047776053587454
+      },
+      {
+        "macro_f1": 0.6941342148063013,
+        "settings": {
+          "dead_at": 1.2,
+          "live_after_s": 3,
+          "still_dead_s": null
+        },
+        "spell_f1_mean": 0.30426233122027246
+      },
+      {
+        "macro_f1": 0.7765976210288071,
+        "settings": {
+          "dead_at": 1.2,
+          "live_after_s": 0,
+          "still_dead_s": 3.0
+        },
+        "spell_f1_mean": 0.3276960986560365
+      },
+      {
+        "macro_f1": 0.7732645559181553,
+        "settings": {
+          "dead_at": 1.2,
+          "live_after_s": 3,
+          "still_dead_s": 3.0
+        },
+        "spell_f1_mean": 0.3271045119575132
+      }
+    ]
+  },
+  "train_v3": {
+    "macro_f1": 0.7522658892196287,
+    "per_match": [
+      {
+        "alive_dead_f1": 0.8959153242562762,
+        "degraded": "v3/seed0",
+        "macro_f1": 0.7503976167066876,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 434.0,
+        "spell_f1_mean": 0.341123595505618,
+        "team_acc_both_alive": 0.7765681700362882
+      },
+      {
+        "alive_dead_f1": 0.8884580917719783,
+        "degraded": "v3/seed1",
+        "macro_f1": 0.7450963214066338,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 450.0,
+        "spell_f1_mean": 0.32317880794701986,
+        "team_acc_both_alive": 0.7802662275284754
+      },
+      {
+        "alive_dead_f1": 0.9039845489549632,
+        "degraded": "v3/seed2",
+        "macro_f1": 0.7613037295455648,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 449.0,
+        "spell_f1_mean": 0.3385635359116022,
+        "team_acc_both_alive": 0.780523651407109
+      }
+    ],
+    "regime": "degraded v3 seeds [0, 1, 2]",
+    "settings": {
+      "dead_at": 1.2,
+      "live_after_s": 3,
+      "still_dead_s": 3.0
+    },
+    "spell_f1_mean": 0.3342886464547467,
+    "split": "val",
+    "train_grid": [
+      {
+        "macro_f1": 0.7472326523609194,
+        "settings": {
+          "dead_at": null,
+          "live_after_s": 0,
+          "still_dead_s": null
+        },
+        "spell_f1_mean": 0.3325826522680464
+      },
+      {
+        "macro_f1": 0.7469325323842289,
+        "settings": {
+          "dead_at": null,
+          "live_after_s": 3,
+          "still_dead_s": null
+        },
+        "spell_f1_mean": 0.33685625945048886
+      },
+      {
+        "macro_f1": 0.772724334345435,
+        "settings": {
+          "dead_at": null,
+          "live_after_s": 0,
+          "still_dead_s": 3.0
+        },
+        "spell_f1_mean": 0.33826644501056746
+      },
+      {
+        "macro_f1": 0.7724797676003616,
+        "settings": {
+          "dead_at": null,
+          "live_after_s": 3,
+          "still_dead_s": 3.0
+        },
+        "spell_f1_mean": 0.3424524721604301
+      },
+      {
+        "macro_f1": 0.7552725164600803,
+        "settings": {
+          "dead_at": 1.0,
+          "live_after_s": 0,
+          "still_dead_s": null
+        },
+        "spell_f1_mean": 0.3351631507249146
+      },
+      {
+        "macro_f1": 0.7549088664974165,
+        "settings": {
+          "dead_at": 1.0,
+          "live_after_s": 3,
+          "still_dead_s": null
+        },
+        "spell_f1_mean": 0.33930192610416093
+      },
+      {
+        "macro_f1": 0.7748783720731863,
+        "settings": {
+          "dead_at": 1.0,
+          "live_after_s": 0,
+          "still_dead_s": 3.0
+        },
+        "spell_f1_mean": 0.33993326286731357
+      },
+      {
+        "macro_f1": 0.7745456870005353,
+        "settings": {
+          "dead_at": 1.0,
+          "live_after_s": 3,
+          "still_dead_s": 3.0
+        },
+        "spell_f1_mean": 0.3439827353498231
+      },
+      {
+        "macro_f1": 0.7585522326496125,
+        "settings": {
+          "dead_at": 1.2,
+          "live_after_s": 0,
+          "still_dead_s": null
+        },
+        "spell_f1_mean": 0.3363282896860795
+      },
+      {
+        "macro_f1": 0.7581774193155663,
+        "settings": {
+          "dead_at": 1.2,
+          "live_after_s": 3,
+          "still_dead_s": null
+        },
+        "spell_f1_mean": 0.34040545981196274
+      },
+      {
+        "macro_f1": 0.7772004531564428,
+        "settings": {
+          "dead_at": 1.2,
+          "live_after_s": 0,
+          "still_dead_s": 3.0
+        },
+        "spell_f1_mean": 0.3410434955017634
+      },
+      {
+        "macro_f1": 0.7768521273101765,
+        "settings": {
+          "dead_at": 1.2,
+          "live_after_s": 3,
+          "still_dead_s": 3.0
+        },
+        "spell_f1_mean": 0.3450334682098579
+      }
+    ]
+  },
+  "val": {
+    "macro_f1": 0.7547508514784095,
+    "per_match": [
+      {
+        "alive_dead_f1": 0.8852324809754464,
+        "degraded": "v2/seed0",
+        "macro_f1": 0.7537944364335439,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 412.0,
+        "spell_f1_mean": 0.3405529953917051,
+        "team_acc_both_alive": 0.7969369596592263
+      },
+      {
+        "alive_dead_f1": 0.8880330361889689,
+        "degraded": "v2/seed1",
+        "macro_f1": 0.7470897137052744,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 434.0,
+        "spell_f1_mean": 0.32269662921348313,
+        "team_acc_both_alive": 0.7815384615384615
+      },
+      {
+        "alive_dead_f1": 0.9020739222310796,
+        "degraded": "v2/seed2",
+        "macro_f1": 0.7633684042964101,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 418.0,
+        "spell_f1_mean": 0.3185354691075515,
+        "team_acc_both_alive": 0.7827605554776266
+      }
+    ],
+    "regime": "degraded v2 seeds [0, 1, 2]",
+    "settings": {
+      "dead_at": 1.2,
+      "live_after_s": 3,
+      "still_dead_s": 3.0
+    },
+    "spell_f1_mean": 0.3272616979042466,
+    "split": "val"
+  },
+  "val_v3": {
+    "macro_f1": 0.7522658892196287,
+    "per_match": [
+      {
+        "alive_dead_f1": 0.8959153242562762,
+        "degraded": "v3/seed0",
+        "macro_f1": 0.7503976167066876,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 434.0,
+        "spell_f1_mean": 0.341123595505618,
+        "team_acc_both_alive": 0.7765681700362882
+      },
+      {
+        "alive_dead_f1": 0.8884580917719783,
+        "degraded": "v3/seed1",
+        "macro_f1": 0.7450963214066338,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 450.0,
+        "spell_f1_mean": 0.32317880794701986,
+        "team_acc_both_alive": 0.7802662275284754
+      },
+      {
+        "alive_dead_f1": 0.9039845489549632,
+        "degraded": "v3/seed2",
+        "macro_f1": 0.7613037295455648,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 449.0,
+        "spell_f1_mean": 0.3385635359116022,
+        "team_acc_both_alive": 0.780523651407109
+      }
+    ],
+    "regime": "degraded v3 seeds [0, 1, 2]",
+    "settings": {
+      "dead_at": 1.2,
+      "live_after_s": 3,
+      "still_dead_s": 3.0
+    },
+    "spell_f1_mean": 0.3342886464547467,
+    "split": "val"
+  }
+}

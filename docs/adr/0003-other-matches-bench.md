@@ -24,8 +24,8 @@ and the official event data.
   Rebuilding H/A from the event data to match "controlled possession" is a later slice.
 - **Degradation**: experiments are scored on the clean tracking made to look like the ATD
   (`possession/degrade.py`), using only statistics of the ATD's own inputs in the graded halves,
-  never its labels. Three seeds per match by default; a seed's ball mask is the same in every
-  version.
+  never its labels. Three seeds per match by default; a seed's ball mask is the same in versions
+  1 and 2.
   - Version 1 (#20) hides the ball, in alternating visible/hidden runs drawn from the ATD's run
     lengths.
   - Version 2 (#22, the default) also breaks the players into tracklets. How many are missing at
@@ -34,6 +34,20 @@ and the official event data.
     free slot of its side (24 home, 22 away, a frame's gap between tracklets). Per-frame counts
     match the ATD (mean 20.4 against 20.5, 5th percentile 14); tracklets come out shorter (median
     15 s against 35 s), so v2 is somewhat harsher than the ATD.
+  - Version 3 (#24, `--version 3`, saved under `<split>_v3`) moves the ball's gaps to where the
+    ATD loses it: 85% of stoppages (the DFL's dead runs) are hidden, except up to 2 s at each end,
+    and live play loses the ball in ATD-length gaps (up to 10 s) on 10% of its frames. The labels
+    place the gaps; no experiment sees them. The players are as in v2. It also hides the DFL's
+    frozen ball: during a stoppage the DFL keeps the ball still (often beyond a line), which makes
+    ball cues for dead play far too easy on v1/v2.
+- **Stand-in Smart Tagging** (#24): the IDSSE matches have none, so `ExternalMatch` builds set-piece
+  windows like BAR-ATH's from the DFL's own restarts in `event.xml` (`external.stand_in_windows`):
+  35 s long (5 s for kick-offs), starting 4-8 s before the restart (8-16 s for free kicks, 1-4 s
+  for kick-offs), as measured on BAR-ATH's inputs; a share of each type dropped so the counts look
+  like BAR-ATH's (throw-ins and goal kicks 60% kept, free kicks 20%, corners and kick-offs all),
+  half of the team tags replaced by N/A, and a GOALS phase from 30 s before each goal to its
+  kick-off. Seeded by the match. They answer `smart_tagging_events` and the painted
+  `smart_tagging_*` attributes, as the Match does.
 - **Learned parts**: an experiment may define `fit(matches, say)`. `bench train` calls it on the
   training matches before the settings grid, and the experiment saves what it learnt as a small
   file in `possession/models/`, committed, so `predict()` and the submission need no training
@@ -58,7 +72,8 @@ and the official event data.
   at random, so about half the hidden frames are live play. BAR-ATH's real gaps are not random:
   inside them the players move at 1.1 m/s on average, against 2.1 m/s where the ball is tracked,
   and Smart Tagging puts most of them in crowded-box and goal phases. They are mostly stoppages.
-  So the bench overstates what filling gaps is worth on BAR-ATH. Next version: draw gap positions
-  from the kind of moments the ATD loses the ball in.
+  So the bench overstates what filling gaps is worth on BAR-ATH. Version 3 (#24) places them
+  mostly in stoppages; its shares (85% of stoppages, 10% of live play) are a judgement from the
+  BAR-ATH evidence above, not measured.
 - One validation match (three seeds) is a small sample: differences under about 0.02 there are
   not evidence.
