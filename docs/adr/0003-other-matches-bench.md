@@ -23,9 +23,21 @@ and the official event data.
   is the provider's possession, a close cousin of ours (CONTEXT.md), not the same definition.
   Rebuilding H/A from the event data to match "controlled possession" is a later slice.
 - **Degradation**: experiments are scored on the clean tracking made to look like the ATD
-  (`possession/degrade.py`). Version 1 hides the ball only, in alternating visible/hidden runs drawn
-  from the ATD's own run lengths in the graded halves (an input statistic, not a label). Three seeds
-  per match by default.
+  (`possession/degrade.py`), using only statistics of the ATD's own inputs in the graded halves,
+  never its labels. Three seeds per match by default; a seed's ball mask is the same in every
+  version.
+  - Version 1 (#20) hides the ball, in alternating visible/hidden runs drawn from the ATD's run
+    lengths.
+  - Version 2 (#22, the default) also breaks the players into tracklets. How many are missing at
+    each frame is copied from a random stretch of the ATD's per-frame shortfall; which ones follows
+    random priorities redrawn at ATD tracklet lengths; each visible stretch goes into the first
+    free slot of its side (24 home, 22 away, a frame's gap between tracklets). Per-frame counts
+    match the ATD (mean 20.4 against 20.5, 5th percentile 14); tracklets come out shorter (median
+    15 s against 35 s), so v2 is somewhat harsher than the ATD.
+- **Learned parts**: an experiment may define `fit(matches, say)`. `bench train` calls it on the
+  training matches before the settings grid, and the experiment saves what it learnt as a small
+  file in `possession/models/`, committed, so `predict()` and the submission need no training
+  run.
 - **Split**, fixed before any score was read:
   train `J03WMX J03WN1 J03WOH J03WQQ`, validation `J03WOY`, test `J03WPY J03WR9`.
   Training picks an experiment's settings (its `GRID`, by mean spellF1); validation compares
@@ -41,6 +53,12 @@ and the official event data.
   at a 50-frame window, the window that is best on the real match's full ground truth, at a similar
   level (spellF1 0.22 against 0.24).
 - The scores measure agreement with the DFL's labelling under a simple degradation. A method can
-  overfit either. Where the gaps fall, player dropouts and tracklets are not modelled yet.
+  overfit either.
+- **Where the gaps fall is not modelled, and it matters** (found in #22). The bench hides the ball
+  at random, so about half the hidden frames are live play. BAR-ATH's real gaps are not random:
+  inside them the players move at 1.1 m/s on average, against 2.1 m/s where the ball is tracked,
+  and Smart Tagging puts most of them in crowded-box and goal phases. They are mostly stoppages.
+  So the bench overstates what filling gaps is worth on BAR-ATH. Next version: draw gap positions
+  from the kind of moments the ATD loses the ball in.
 - One validation match (three seeds) is a small sample: differences under about 0.02 there are
   not evidence.
