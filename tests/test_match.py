@@ -83,3 +83,22 @@ def test_every_item_reads_only_committed_files():
     for item in m.ITEMS.values():
         for source, asset in item.raw:
             assert asset in checksums[source], (item.name, asset)
+
+
+def test_team_shape_item_is_built_from_the_tracking_items():
+    from possession import team_shape
+
+    n = 60
+    xy = np.full((n, 2, 2), np.nan, dtype=np.float32)
+    xy[:, 0] = [10.0, 30.0]     # the home slot
+    xy[:, 1] = [80.0, 40.0]     # the away slot
+
+    class Inputs:
+        def item(self, name):
+            return {"tracking": {"track_xy": xy}, "track_team": np.array(["H", "A"])}[name]
+
+    built = m._build_team_shape(Inputs())
+    assert set(built) == set(team_shape.NAMES)
+    assert all(column.shape == (n,) for column in built.values())
+    assert m.ITEMS["team_shape"].deps == ("tracking", "track_team")
+    assert m.ITEMS["team_shape"].version == team_shape.VERSION

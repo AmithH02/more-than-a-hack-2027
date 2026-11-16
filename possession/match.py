@@ -143,6 +143,15 @@ def _build_track_team(inputs):
     return read_teams(inputs.path(SOURCE, "atd_meta"))[1]
 
 
+def _build_team_shape(inputs):
+    from possession import team_shape
+    from possession.fill import half_blocks
+
+    tracking = inputs.item("tracking")
+    return team_shape.compute(tracking["track_xy"], inputs.item("track_team"), half_blocks(),
+                              games.GAMES[games.GAME]["pitch"])
+
+
 def _build_smart_tagging(inputs):
     from starter import load_smart_tagging  # organisers' loader: imported, never edited
 
@@ -152,6 +161,8 @@ def _build_smart_tagging(inputs):
     return paint_smart_tagging(events, team_names, games.source_frames(SOURCE))
 
 
+from possession.team_shape import VERSION as _TEAM_SHAPE_VERSION  # noqa: E402
+
 # The cache items. A Match attribute may expose one array of an item.
 ITEMS = {item.name: item for item in (
     Item("tracking", version=1, build=_build_tracking,
@@ -160,6 +171,9 @@ ITEMS = {item.name: item for item in (
     Item("track_team", version=1, build=_build_track_team,
          raw=((SOURCE, "atd_meta"),),
          doc="side of each track slot"),
+    Item("team_shape", version=_TEAM_SHAPE_VERSION, build=_build_team_shape,
+         deps=("tracking", "track_team"),
+         doc="side-level team shape per frame (possession/team_shape.py)"),
     Item("smart_tagging", version=1, build=_build_smart_tagging,
          raw=((SOURCE, "smart_tagging"), (SOURCE, "atd_meta")),
          doc="Smart Tagging phases and their team, per frame and code"),
@@ -225,6 +239,14 @@ class Match:
     def track_team(self):
         """(n_tracks,) str: "H" or "A" for each track slot."""
         return self.item("track_team")
+
+    # Team shape: what the players say, side by side, ball or no ball.
+
+    @property
+    def team_shape(self):
+        """{name: (n_frames,) float64}: side-level team shape per frame, x turned so home attacks
+        +x; NaN where it cannot be told. Columns and units: possession/team_shape.py."""
+        return self.item("team_shape")
 
     # Smart Tagging: inferred, noisy, and its phases overlap.
 

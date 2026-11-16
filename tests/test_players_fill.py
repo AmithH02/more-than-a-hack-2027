@@ -116,3 +116,16 @@ def test_players_fill_fits_saves_and_predicts(tmp_path):
     finally:
         players_fill._load.cache = None
     assert labels.shape == (match.n_frames,) and set(labels) <= {"H", "A", "D"}
+
+
+def test_external_match_has_the_same_team_shape_as_compute():
+    match = synthetic_match()
+    table = match.team_shape
+    assert table is match.team_shape                              # computed once
+    direct = team_shape.compute(match.track_xy, match.track_team, match.blocks, match.pitch)
+    for name in team_shape.NAMES:
+        np.testing.assert_array_equal(table[name], direct[name])
+    X, names = team_shape.features(match, names=("mean_speed", "n_home"))
+    assert X.shape == (match.n_frames, 2) and names == ("mean_speed", "n_home")
+    assert np.isnan(table["mean_speed"][:5]).all()                # no velocity before a second
+    assert (X[:5, 0] == 0).all()                                  # ...which features() zeroes
