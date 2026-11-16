@@ -10,7 +10,7 @@ We may not tune on the public five minutes, and label-free proxies cannot tell u
 gets possessions right. External data about other games is allowed (RULES.md, FAQ.md). The IDSSE
 dataset (Bassek, Weber, Rein & Memmert, 2025, Scientific Data; CC BY 4.0) has seven full Bundesliga
 and 2. Bundesliga matches with 25 Hz tracking, the DFL's per-frame ball status and ball possession,
-and the official event data. Several other teams use it the same way.
+and the official event data.
 
 ## Decision
 
