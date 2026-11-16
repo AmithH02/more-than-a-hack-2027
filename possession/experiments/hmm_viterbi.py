@@ -32,8 +32,8 @@ EVERY = 5     # fit on every 5th frame: neighbouring frames are near copies
 CAP = 30.0    # m: farther than this, a player is simply far from the ball
 EPS = 1e-4    # probabilities are kept within [EPS, 1 - EPS]
 
-GRID = {"w": [0.05, 0.1, 0.2, 0.4], "switch": [1.0, 1.5, 2.5], "dead": [1.0, 1.5, 2.5]}
-DEFAULT = {"w": 0.1, "switch": 1.5, "dead": 1.5}  # replaced by what `bench train` chooses
+GRID = {"w": [0.4, 0.7, 1.0, 1.5], "switch": [0.5, 0.75, 1.0], "dead": [0.5, 0.75, 1.0]}
+DEFAULT = {"w": 0.4, "switch": 0.5, "dead": 0.75}  # chosen by `bench train` (experiments/metrics/bench)
 
 BALL_NAMES = ("near_home", "near_away", "near_margin", "near_any", "ball_speed", "ball_out",
               "ball_x", "ball_y_centre")

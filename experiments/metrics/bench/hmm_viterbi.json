@@ -1,0 +1,371 @@
+{
+  "train": {
+    "macro_f1": 0.7736652207287337,
+    "per_match": [
+      {
+        "alive_dead_f1": 0.8836441677752955,
+        "degraded": "v2/seed0",
+        "macro_f1": 0.7702522966584268,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 276.0,
+        "spell_f1_mean": 0.34863387978142074,
+        "team_acc_both_alive": 0.8254718991009417
+      },
+      {
+        "alive_dead_f1": 0.8891523562300319,
+        "degraded": "v2/seed1",
+        "macro_f1": 0.7675019035297534,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 270.0,
+        "spell_f1_mean": 0.33223140495867765,
+        "team_acc_both_alive": 0.8125929876765011
+      },
+      {
+        "alive_dead_f1": 0.9062951717869249,
+        "degraded": "v2/seed2",
+        "macro_f1": 0.7832414619980206,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 270.0,
+        "spell_f1_mean": 0.325068870523416,
+        "team_acc_both_alive": 0.809970886904679
+      }
+    ],
+    "regime": "degraded v2 seeds [0, 1, 2]",
+    "settings": {
+      "dead": 0.75,
+      "switch": 0.5,
+      "w": 0.4
+    },
+    "spell_f1_mean": 0.33531138508783814,
+    "split": "val",
+    "train_grid": [
+      {
+        "macro_f1": 0.7849166563349731,
+        "settings": {
+          "dead": 0.5,
+          "switch": 0.5,
+          "w": 0.4
+        },
+        "spell_f1_mean": 0.3276881934177604
+      },
+      {
+        "macro_f1": 0.7859813259556073,
+        "settings": {
+          "dead": 0.75,
+          "switch": 0.5,
+          "w": 0.4
+        },
+        "spell_f1_mean": 0.32886805599485697
+      },
+      {
+        "macro_f1": 0.7866231700602544,
+        "settings": {
+          "dead": 1.0,
+          "switch": 0.5,
+          "w": 0.4
+        },
+        "spell_f1_mean": 0.32674483396030324
+      },
+      {
+        "macro_f1": 0.7849316389597348,
+        "settings": {
+          "dead": 0.5,
+          "switch": 0.75,
+          "w": 0.4
+        },
+        "spell_f1_mean": 0.3250741095119298
+      },
+      {
+        "macro_f1": 0.7860445947427911,
+        "settings": {
+          "dead": 0.75,
+          "switch": 0.75,
+          "w": 0.4
+        },
+        "spell_f1_mean": 0.32612098653306454
+      },
+      {
+        "macro_f1": 0.7864204154592226,
+        "settings": {
+          "dead": 1.0,
+          "switch": 0.75,
+          "w": 0.4
+        },
+        "spell_f1_mean": 0.32345641399202
+      },
+      {
+        "macro_f1": 0.7850677101332021,
+        "settings": {
+          "dead": 0.5,
+          "switch": 1.0,
+          "w": 0.4
+        },
+        "spell_f1_mean": 0.3223135579010938
+      },
+      {
+        "macro_f1": 0.7861375941245244,
+        "settings": {
+          "dead": 0.75,
+          "switch": 1.0,
+          "w": 0.4
+        },
+        "spell_f1_mean": 0.3232699943943853
+      },
+      {
+        "macro_f1": 0.7864789392915181,
+        "settings": {
+          "dead": 1.0,
+          "switch": 1.0,
+          "w": 0.4
+        },
+        "spell_f1_mean": 0.3201191824223884
+      },
+      {
+        "macro_f1": 0.7825078406268159,
+        "settings": {
+          "dead": 0.5,
+          "switch": 0.5,
+          "w": 0.7
+        },
+        "spell_f1_mean": 0.3220357196220197
+      },
+      {
+        "macro_f1": 0.7838040405520234,
+        "settings": {
+          "dead": 0.75,
+          "switch": 0.5,
+          "w": 0.7
+        },
+        "spell_f1_mean": 0.3249080678074366
+      },
+      {
+        "macro_f1": 0.7847194904649811,
+        "settings": {
+          "dead": 1.0,
+          "switch": 0.5,
+          "w": 0.7
+        },
+        "spell_f1_mean": 0.3269910807946744
+      },
+      {
+        "macro_f1": 0.7828815552617349,
+        "settings": {
+          "dead": 0.5,
+          "switch": 0.75,
+          "w": 0.7
+        },
+        "spell_f1_mean": 0.3225678833467523
+      },
+      {
+        "macro_f1": 0.7841144729577699,
+        "settings": {
+          "dead": 0.75,
+          "switch": 0.75,
+          "w": 0.7
+        },
+        "spell_f1_mean": 0.32520960332831356
+      },
+      {
+        "macro_f1": 0.7851178558345276,
+        "settings": {
+          "dead": 1.0,
+          "switch": 0.75,
+          "w": 0.7
+        },
+        "spell_f1_mean": 0.3273206815004799
+      },
+      {
+        "macro_f1": 0.7829876034844389,
+        "settings": {
+          "dead": 0.5,
+          "switch": 1.0,
+          "w": 0.7
+        },
+        "spell_f1_mean": 0.3231817443850061
+      },
+      {
+        "macro_f1": 0.784389529940471,
+        "settings": {
+          "dead": 0.75,
+          "switch": 1.0,
+          "w": 0.7
+        },
+        "spell_f1_mean": 0.32668393429147896
+      },
+      {
+        "macro_f1": 0.7854353923480571,
+        "settings": {
+          "dead": 1.0,
+          "switch": 1.0,
+          "w": 0.7
+        },
+        "spell_f1_mean": 0.328371302251072
+      },
+      {
+        "macro_f1": 0.7818529294822002,
+        "settings": {
+          "dead": 0.5,
+          "switch": 0.5,
+          "w": 1.0
+        },
+        "spell_f1_mean": 0.32062289308334985
+      },
+      {
+        "macro_f1": 0.782636509227311,
+        "settings": {
+          "dead": 0.75,
+          "switch": 0.5,
+          "w": 1.0
+        },
+        "spell_f1_mean": 0.32396091397339133
+      },
+      {
+        "macro_f1": 0.7835566843633637,
+        "settings": {
+          "dead": 1.0,
+          "switch": 0.5,
+          "w": 1.0
+        },
+        "spell_f1_mean": 0.32447051659461723
+      },
+      {
+        "macro_f1": 0.781719866258494,
+        "settings": {
+          "dead": 0.5,
+          "switch": 0.75,
+          "w": 1.0
+        },
+        "spell_f1_mean": 0.32006648463332665
+      },
+      {
+        "macro_f1": 0.782567717306251,
+        "settings": {
+          "dead": 0.75,
+          "switch": 0.75,
+          "w": 1.0
+        },
+        "spell_f1_mean": 0.3231162130935995
+      },
+      {
+        "macro_f1": 0.7835325449091931,
+        "settings": {
+          "dead": 1.0,
+          "switch": 0.75,
+          "w": 1.0
+        },
+        "spell_f1_mean": 0.3236902156801075
+      },
+      {
+        "macro_f1": 0.7818823886182128,
+        "settings": {
+          "dead": 0.5,
+          "switch": 1.0,
+          "w": 1.0
+        },
+        "spell_f1_mean": 0.31919798827224893
+      },
+      {
+        "macro_f1": 0.7828254574431993,
+        "settings": {
+          "dead": 0.75,
+          "switch": 1.0,
+          "w": 1.0
+        },
+        "spell_f1_mean": 0.32265770379905934
+      },
+      {
+        "macro_f1": 0.7837460311506742,
+        "settings": {
+          "dead": 1.0,
+          "switch": 1.0,
+          "w": 1.0
+        },
+        "spell_f1_mean": 0.3234305864514198
+      },
+      {
+        "macro_f1": 0.7812636678441186,
+        "settings": {
+          "dead": 0.5,
+          "switch": 0.5,
+          "w": 1.5
+        },
+        "spell_f1_mean": 0.31661930801860005
+      },
+      {
+        "macro_f1": 0.7819537380097481,
+        "settings": {
+          "dead": 0.75,
+          "switch": 0.5,
+          "w": 1.5
+        },
+        "spell_f1_mean": 0.31914034082936926
+      },
+      {
+        "macro_f1": 0.7824151282893462,
+        "settings": {
+          "dead": 1.0,
+          "switch": 0.5,
+          "w": 1.5
+        },
+        "spell_f1_mean": 0.3215208113142197
+      },
+      {
+        "macro_f1": 0.7810661526505215,
+        "settings": {
+          "dead": 0.5,
+          "switch": 0.75,
+          "w": 1.5
+        },
+        "spell_f1_mean": 0.31745935448161744
+      },
+      {
+        "macro_f1": 0.7818095396837178,
+        "settings": {
+          "dead": 0.75,
+          "switch": 0.75,
+          "w": 1.5
+        },
+        "spell_f1_mean": 0.320489485300134
+      },
+      {
+        "macro_f1": 0.7822585701441939,
+        "settings": {
+          "dead": 1.0,
+          "switch": 0.75,
+          "w": 1.5
+        },
+        "spell_f1_mean": 0.3228255863047211
+      },
+      {
+        "macro_f1": 0.7809784454088918,
+        "settings": {
+          "dead": 0.5,
+          "switch": 1.0,
+          "w": 1.5
+        },
+        "spell_f1_mean": 0.31667314813983954
+      },
+      {
+        "macro_f1": 0.7816809400243151,
+        "settings": {
+          "dead": 0.75,
+          "switch": 1.0,
+          "w": 1.5
+        },
+        "spell_f1_mean": 0.319715766071464
+      },
+      {
+        "macro_f1": 0.782165267202338,
+        "settings": {
+          "dead": 1.0,
+          "switch": 1.0,
+          "w": 1.5
+        },
+        "spell_f1_mean": 0.3217178482409572
+      }
+    ]
+  }
+}
