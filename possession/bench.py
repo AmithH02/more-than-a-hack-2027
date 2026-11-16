@@ -6,6 +6,8 @@
     python -m possession.bench test  <experiment>      # the held-out matches: once per candidate
     options: --seeds 0 1 2   degradation seeds (default 0 1 2)
              --clean         score on the clean DFL tracking instead (an upper bound)
+             --version 3     degradation version (default degrade.VERSION; 3 hides the ball
+                             mostly in stoppages, as the ATD does); saved under "<split>_v3"
              --set window=75 run with these settings instead of the experiment's DEFAULT
 
 An experiment is benchable as it is: predict(match) must use only attributes ExternalMatch has.
@@ -65,10 +67,10 @@ def mean(rows, key):
     return float(np.mean([scores[key] for _, scores in rows]))
 
 
-def matches_for(split, seeds, clean):
+def matches_for(split, seeds, clean, version=None):
     if clean:
         return external.split(split)
-    return [m for seed in seeds for m in external.split(split, degrade=seed)]
+    return [m for seed in seeds for m in external.split(split, degrade=seed, version=version)]
 
 
 def report(title, rows, say):
@@ -134,6 +136,7 @@ def main(argv=None, say=print):
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     parser.add_argument("--clean", action="store_true")
     parser.add_argument("--set", nargs="+", metavar="NAME=VALUE")
+    parser.add_argument("--version", type=int, default=None)
     args = parser.parse_args(argv)
 
     # The other matches, and BAR-ATH's ATD whose ball gaps the degradation copies.
@@ -148,15 +151,17 @@ def main(argv=None, say=print):
 
     module = load_experiment(args.experiment)
     started = time.time()
-    regime = "clean" if args.clean else "degraded v{} seeds {}".format(
-        __import__("possession.degrade").degrade.VERSION, args.seeds)
+    from possession import degrade
+    version = args.version or degrade.VERSION
+    regime = "clean" if args.clean else "degraded v{} seeds {}".format(version, args.seeds)
     entry = {"regime": regime}
 
     settings = parse_settings(args.set)
     if args.split == "train":
         say("training {} on {} ({})".format(args.experiment, ", ".join(external.SPLITS["train"]),
                                             regime))
-        settings, table = train(module, matches_for("train", args.seeds, args.clean), say)
+        settings, table = train(module, matches_for("train", args.seeds, args.clean, version),
+                                say)
         entry["train_grid"] = [{"settings": s, "spell_f1_mean": f, "macro_f1": m}
                                for s, f, m in table]
         split = "val"
@@ -168,7 +173,7 @@ def main(argv=None, say=print):
     else:
         predict = module.predict
         settings = getattr(module, "DEFAULT", {})
-    rows = run_on(matches_for(split, args.seeds, args.clean), predict)
+    rows = run_on(matches_for(split, args.seeds, args.clean, version), predict)
     report("{} on {} with {} ({})".format(args.experiment, split, json.dumps(settings), regime),
            rows, say)
     entry.update({
@@ -179,6 +184,8 @@ def main(argv=None, say=print):
         "per_match": [dict(match=m.match_id, degraded=m.degraded, **s) for m, s in rows],
     })
     key = args.split if not args.clean else args.split + "_clean"
+    if not args.clean and version != degrade.VERSION:
+        key += "_v{}".format(version)
     path = save(args.experiment, key, entry)
     say("saved to {} ({:.0f} s)".format(os.path.relpath(path, REPO), time.time() - started))
     return 0

@@ -18,13 +18,28 @@ bursts (5% of frames have 14 or fewer), and a player's track is broken into trac
     the first free slot of its side, as the ATD does; a tracklet with no free slot is lost.
 Slots are therefore tracklets, not players, exactly as in the ATD.
 
-Not modelled yet: where the gaps fall (probably not at random), identity switches inside a
-tracklet, and objects tracked that are not players.
+Version 3 moves the ball's gaps to where the ATD loses it: mostly in stoppages. On BAR-ATH the
+players move at 1.1 m/s inside the ball's gaps against 2.1 m/s where it is tracked, and the
+players_fill alive model calls only about 14% of gap frames alive. So, with the players as in
+version 2:
+  - each stoppage (a run of the DFL's dead frames) is hidden with probability STOP_HIDDEN, from a
+    moment after it starts to a moment before the restart (each drawn up to EDGE_S), so the ball
+    going out and the restart itself are sometimes seen;
+  - live play loses the ball in gaps drawn from the ATD's gap lengths of up to LIVE_GAP_MAX frames,
+    laid at random until LIVE_HIDDEN of live frames are hidden.
+This uses the labels to place the gaps: it simulates the ATD, and no experiment sees the labels.
+Its ball mask differs from versions 1 and 2.
+
+Not modelled yet: identity switches inside a tracklet, and objects tracked that are not players.
 """
 
 import numpy as np
 
-VERSION = 2
+VERSION = 2          # the default; 3 is chosen with `python -m possession.bench --version 3`
+STOP_HIDDEN = 0.85   # share of stoppages whose ball is lost (version 3)
+EDGE_S = 2.0         # s: the ball is seen for up to this long at each end of a hidden stoppage
+LIVE_HIDDEN = 0.10   # share of live frames whose ball is lost (version 3)
+LIVE_GAP_MAX = 250   # frames: live-play gaps are drawn from ATD gaps no longer than this
 FULL_SIDES = 22
 MIN_VISIBLE = 25  # frames
 
@@ -73,6 +88,32 @@ def ball_mask(n, present_runs, missing_runs, rng):
             hidden[max(position, 0):max(position + length, 0)] = True
         position += length
         visible = not visible
+    return hidden
+
+
+def stoppage_mask(labels, blocks, missing_runs, rng):
+    """(n,) bool, True where the ball is hidden (version 3): most stoppages, some live play."""
+    labels = np.asarray(labels)
+    n = len(labels)
+    hidden = np.zeros(n, dtype=bool)
+    edge = int(EDGE_S * 25)
+    for first, last in blocks:
+        for s, e, dead in _runs(labels[first:last + 1] == "D"):
+            if dead and rng.random() < STOP_HIDDEN:
+                a = first + s + int(rng.integers(0, edge + 1))
+                b = first + e - int(rng.integers(0, edge + 1))
+                hidden[a:max(a, b)] = True
+    live = labels != "D"
+    pool = missing_runs[missing_runs <= LIVE_GAP_MAX]
+    pool = pool if len(pool) else np.array([25])
+    target = LIVE_HIDDEN * live.sum()
+    live_hidden = 0
+    while live_hidden < target:
+        length = int(rng.choice(pool))
+        start = int(rng.integers(0, max(1, n - length)))
+        newly = live[start:start + length] & ~hidden[start:start + length]
+        hidden[start:start + length] |= live[start:start + length]
+        live_hidden += int(newly.sum())
     return hidden
 
 
@@ -164,6 +205,9 @@ def degrade(match, seed, version=VERSION, stats=None):
     for first, last in match.blocks:
         hidden[first:last + 1] = ball_mask(last - first + 1, stats["ball_present"],
                                            stats["ball_missing"], rng)
+    if version >= 3:
+        srng = np.random.default_rng([seed, key, 3])
+        hidden = stoppage_mask(match.labels, match.blocks, np.asarray(stats["ball_missing"]), srng)
     ball_xy = match.ball_xy.copy()
     ball_speed = match.ball_speed.copy()
     ball_xy[hidden] = np.nan
