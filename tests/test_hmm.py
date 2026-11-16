@@ -82,3 +82,27 @@ def test_hmm_viterbi_fits_and_predicts_on_a_synthetic_match(tmp_path, monkeypatc
     np.testing.assert_array_equal(labels, again)
     hmm_viterbi._load.cache = None
     hmm_viterbi._STATE_LOGP.clear()
+
+
+def test_hmm_context_windows_and_gaps():
+    from possession.experiments import hmm_context
+    mask = np.array([0, 1, 0, 0, 1, 0], dtype=bool)
+    assert list(hmm_context.last_index(mask)) == [-1, 1, 1, 1, 4, 4]
+    assert list(hmm_context.next_index(mask)) == [1, 1, 4, 4, 4, 6]
+    assert np.allclose(hmm_context.centred_mean([0, 0, 3, 0, 0], 1), [0, 1, 1, 1, 0])
+
+
+def test_hmm_context_fits_and_predicts_with_hidden_ball(tmp_path, monkeypatch):
+    from possession.experiments import hmm_context
+    match = synthetic_match(n=600)
+    ball = match.ball_xy.copy()
+    ball[100:180] = np.nan                       # a gap, so both model pairs have frames
+    match = match.with_arrays("gap", ball_xy=ball)
+    path = tmp_path / "ctx.json"
+    hmm_context.fit([match], path=str(path), say=lambda *a: None)
+    monkeypatch.setattr(hmm_context, "MODEL_PATH", str(path))
+    labels = hmm_context.predict(match)
+    assert labels.shape == (600,) and set(labels) <= {"H", "A", "D"}
+    np.testing.assert_array_equal(labels, hmm_context.predict(match))
+    hmm_context._load.cache = None
+    hmm_context._STATE_LOGP.clear()
