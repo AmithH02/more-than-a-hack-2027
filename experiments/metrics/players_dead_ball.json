@@ -1,0 +1,68 @@
+{
+  "dead_ball_share": 0.4196,
+  "experiment": "players_dead_ball",
+  "graded_frames": 158857,
+  "halves": [
+    {
+      "all_x": false,
+      "first": 11185,
+      "half": 1,
+      "last": 90651,
+      "n_spells": 273
+    },
+    {
+      "all_x": false,
+      "first": 110808,
+      "half": 2,
+      "last": 190197,
+      "n_spells": 226
+    }
+  ],
+  "home_share": 0.5791,
+  "label_changes_per_min": 6.1187,
+  "label_share": {
+    "A": 0.2443,
+    "D": 0.4196,
+    "H": 0.3361,
+    "X": 0.0
+  },
+  "n_spells": 499,
+  "short_spell_share": 0.1543,
+  "smart_tagging": {
+    "agreement": 0.7609,
+    "coverage": 0.4978
+  },
+  "spell_length_s": {
+    "max": 43.76,
+    "mean": 7.3906,
+    "median": 4.36,
+    "min": 0.04,
+    "p10": 0.6,
+    "p90": 20.096
+  },
+  "spells_per_min": 4.7118,
+  "thresholds": {
+    "dead_ball_share": [
+      0.2,
+      0.5
+    ],
+    "home_share": [
+      0.25,
+      0.75
+    ],
+    "max_short_spell_share": 0.1,
+    "mean_spell_s": [
+      5.0,
+      30.0
+    ],
+    "min_smart_tagging_agreement": 0.6,
+    "short_spell_s": 1.0,
+    "spells_per_min": [
+      1.5,
+      6.0
+    ]
+  },
+  "warnings": [
+    "short_spell_share 0.1543 is above 0.1 (possessions under 1.0 s)"
+  ]
+}
