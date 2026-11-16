@@ -30,7 +30,7 @@ import numpy as np
 
 import games
 from possession import REPO
-from possession.fill import half_blocks
+from possession.fill import fill, half_blocks
 from possession.match import Match, read_teams
 
 sys.path.insert(0, os.path.join(REPO, "scripts"))
@@ -155,11 +155,13 @@ def tagging_events(events):
 
 def write_viewer(out_dir, ball_xy, track_xy, track_team, team_names, homography, events, blocks,
                  pitch, fps, video_path, ground_truth=None, chunk_frames=CHUNK_FRAMES,
-                 say=print):
+                 say=print, game=games.GAME, predictions=None, view=None, truth_on=False):
     """Write the page and its data into `out_dir`; returns the path of index.html.
 
     ball_xy (n, 2) and track_xy (n, tracks, 2) are in metres, NaN where not tracked, as the Match
-    gives them; homography is (n, 3, 3); events come from tagging_events().
+    gives them; homography is (n, 3, 3); events come from tagging_events(). video_path None means
+    the match has no video. predictions is [(name, labels)], shown as if their CSVs were dropped;
+    view ("both", "video", "pitch") is the starting view; truth_on ticks the ground truth.
     """
     n_frames = len(ball_xy)
     track_team = np.asarray(track_team)
@@ -186,7 +188,11 @@ def write_viewer(out_dir, ball_xy, track_xy, track_team, team_names, homography,
     say("    {} chunks of {} frames".format(len(indices), chunk_frames))
 
     meta = {
-        "game": games.GAME,
+        "game": game,
+        "predictions": [{"name": name, "labels": "".join(np.asarray(labels).tolist())}
+                        for name, labels in (predictions or ())],
+        "view": view,
+        "truth_on": truth_on,
         "n_frames": n_frames,
         "fps": fps,
         "pitch": list(pitch),
@@ -202,8 +208,8 @@ def write_viewer(out_dir, ball_xy, track_xy, track_team, team_names, homography,
         "n_home": _b64((tracked & (track_team == "H")).sum(axis=1).astype(np.uint8)),
         "n_away": _b64((tracked & (track_team == "A")).sum(axis=1).astype(np.uint8)),
         "ground_truth": ground_truth,
-        "video": {"uri": pathlib.Path(video_path).resolve().as_uri(), "path": video_path,
-                  "width": VIDEO_SIZE[0], "height": VIDEO_SIZE[1]},
+        "video": {"uri": pathlib.Path(video_path).resolve().as_uri() if video_path else None,
+                  "path": video_path, "width": VIDEO_SIZE[0], "height": VIDEO_SIZE[1]},
     }
     with open(os.path.join(out_dir, "meta.js"), "w") as handle:
         handle.write("window.VIEWER_META = {};\n".format(json.dumps(meta)))
@@ -238,13 +244,52 @@ def build(out_dir=OUT_DIR, say=print):
     return index
 
 
+def build_external(match_id, experiments=(), seed=0, clean=False, out_dir=None, say=print):
+    """The viewer for one of the other matches (possession/external.py): the tracking the
+    experiments see (degraded with `seed` unless `clean`), its full ground truth, and each
+    experiment's labels, with the same fill as the runner's step 5."""
+    from possession import bench, external
+
+    match = external.load(match_id, degrade=None if clean else seed)
+    out_dir = out_dir or os.path.join(REPO, "outputs", "viewer-external", match_id)
+    predictions = []
+    for name in experiments:
+        labels = fill(bench.load_experiment(name).predict(match), blocks=match.blocks)
+        scores = bench.score(labels, match)
+        say("    {}: spellF1 {:.3f}, macroF1 {:.3f}".format(
+            name, scores["spell_f1_mean"], scores["macro_f1"]))
+        predictions.append((name, labels))
+    say("writing {}".format(os.path.relpath(out_dir, REPO)))
+    os.makedirs(out_dir, exist_ok=True)
+    n = match.n_frames
+    index = write_viewer(
+        out_dir, match.ball_xy, match.track_xy, match.track_team, match.team_names,
+        homography=np.full((n, 3, 3), np.nan, dtype=np.float32), events=[], blocks=match.blocks,
+        pitch=match.pitch, fps=external.FPS, video_path=None,
+        ground_truth={"first": 0, "labels": "".join(match.labels.tolist())}, say=say,
+        game="{} ({})".format(match_id, "clean" if clean else match.degraded),
+        predictions=predictions, view="pitch", truth_on=True)
+    say("open {}".format(index))
+    return index
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="python -m possession.viz",
                                      description=__doc__.split("\n\n")[0])
-    parser.add_argument("--out", default=OUT_DIR, help="folder to write (default outputs/viewer)")
+    parser.add_argument("--out", default=None, help="folder to write (default outputs/viewer)")
+    parser.add_argument("--external", metavar="MATCH_ID",
+                        help="one of the other matches (possession/external.py) instead")
+    parser.add_argument("--experiments", nargs="*", default=[],
+                        help="with --external: experiments whose labels to show")
+    parser.add_argument("--seed", type=int, default=0, help="with --external: degradation seed")
+    parser.add_argument("--clean", action="store_true", help="with --external: no degradation")
     args = parser.parse_args(argv)
+    if args.external:
+        build_external(args.external, args.experiments, args.seed, args.clean,
+                       args.out and os.path.abspath(args.out))
+        return 0
     try:
-        build(os.path.abspath(args.out))
+        build(os.path.abspath(args.out or OUT_DIR))
     except (_check_data.DataCheckError, IOError) as error:
         print(error, file=sys.stderr)
         return 1
