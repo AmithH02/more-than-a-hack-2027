@@ -13,7 +13,7 @@ _What we built, and why that rather than something else. To be filled once #5 de
 | Asset | Used? | How / why not |
 |---|---|---|
 | Tactical ATD (tracking) | | |
-| Smart Tagging | | |
+| Smart Tagging | candidate #24 | set-piece windows (type, team) and GOALS phases bound where restarts are searched for |
 | Homography | | |
 | Tactical video | | |
 | Broadcast video and ATD | no (so far) | not synchronised to the scored timeline |
@@ -34,6 +34,43 @@ Write "none" if the method uses no labels._
   hidden-ball frames (about 130,000 frames, every fifth): alive or dead, and which side has the
   ball, from side-level team-shape features. Their parameters are committed in
   `possession/models/players_fill.json`.
+
+- Candidate `players_dead_ball` (#24) reuses those models and learns nothing new; its three
+  settings were picked on the training matches under degradation v3 (`bench train --version 3`).
+  To measure it the bench gives the IDSSE matches stand-in Smart Tagging windows made from the
+  DFL's own set-piece events (ADR 0003).
+
+## Dead ball (candidate `players_dead_ball`, #24)
+
+`possession/dead_ball.py` finds dead stretches from Smart Tagging and the tracking, and they
+override `players_fill`'s labels with `D`. Nothing is a frame number found by looking at BAR-ATH:
+every step runs on the match's own inputs, with thresholds from the Laws or physics, or settings
+chosen on the training matches.
+
+1. **Kick-offs**: `D` from each half's first graded frame to the kick inside its Kick Off (Start)
+   window (a ball lying still within 4 m of the centre spot, then struck at over 5 m/s). After a
+   goal, `D` from the onset (step 3, not before the GOALS phase starts, up to 3 minutes back) to
+   the kick inside the Kick Off (After Goal) window. A window belongs to the half it ends in.
+2. **Restart finder**, inside every set-piece window, by the Laws: a throw-in is the ball coming
+   back over a touchline (or a still ball within 2.5 m of one, then thrown); a corner a still ball
+   within 4 m of a corner flag, then struck; a goal kick the same in the goal area (plus 2 m); a
+   free kick a still ball anywhere, then struck. Without the ball: a thrower standing beyond a
+   touchline, or a taker at a corner flag, for a second (the restart is when they leave); else the
+   players speeding up past 1.6 m/s after being slower than 1.2 m/s; else the median offset of the
+   restarts found for that type in the same match.
+3. **Onset**: from the restart, walk back (up to 60 s, never past the previous restart) to the
+   first frame the ball was seen out of play after the last proof of live play (a ball faster than
+   5 m/s inside the pitch); without a ball seen out, to where the players' mean speed rose above
+   1.6 m/s; without that, the median stoppage of that type.
+4. **Untagged stoppages**: the ball seen over a line (by more than 1 m) until the next restart
+   candidate; the ball lying still (under 1 m/s) inside the pitch for 3 s; the players' mean speed
+   under 1.2 m/s until it is back over 1.6 m/s, for at least 8 s, with no proof of live play
+   inside (its end snapped to a set kick within 3 s).
+5. **Combined**: these stretches are `D`; for 3 s after each restart play is alive, for the side
+   Smart Tagging tags if it does, else the first side `players_fill` gives.
+
+On BAR-ATH the second half's graded block starts about two minutes before its kick-off; that
+stretch is now `D` (step 1).
 
 ## Possession rules implemented
 

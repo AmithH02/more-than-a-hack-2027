@@ -29,6 +29,16 @@ starts using it.
 - **Spell / possession spell**: a maximal run of one team (`H` or `A`) with the ball alive.
   `H H H A A` is two spells; `H H D D H H` is two spells with a stoppage between.
 - **Restart**: play resuming after a dead ball. Always has a clear possessor.
+- **Stoppage**: one dead-ball stretch, from its **onset** (the ball going out, or the referee
+  stopping play) to its restart.
+- **Set-piece window**: a Smart Tagging SET PIECES interval: 35 s (5 s for kick-offs) that
+  contains a restart, usually 4-8 s in (8-16 s for free kicks); mostly live play after it.
+- **Restart finder**: locating the restart inside a set-piece window by the Laws: from the ball
+  (still at the right place, then struck; thrown back over a touchline), else the formation, else
+  the players speeding up, else the median offset of that type in the same match
+  (`possession/dead_ball.py`).
+- **Untagged stoppage**: a stoppage with no set-piece window: found from the ball seen out of play,
+  the ball lying still, or the players slow for a while.
 - **Abstain (`X`)**: we decline to guess. On ungraded frames it's free. Under `spellF1` it is
   filled with our last label in that half, so it's free inside a spell but costly across a
   hand-over. Under `macroF1` it always counts as a miss.
@@ -75,6 +85,10 @@ starts using it.
   item on the Match).
 - **Players fill**: labelling a ball gap from the team shape instead of calling it dead
   (`players_fill`): first alive or dead, then which side has it.
+- **Degradation v3**: the ball hidden mostly in stoppages, as the ATD loses it (#24); also hides the
+  DFL's frozen ball during stoppages.
+- **Stand-in Smart Tagging**: set-piece windows made for the other matches from the DFL's own
+  restarts, shaped and thinned like BAR-ATH's Smart Tagging (`external.stand_in_windows`).
 - **Bench**: `python -m possession.bench`, an experiment scored with the official metrics on the
   other matches. **Train** split picks settings, **validation** compares candidates, **test** is
   touched once per candidate we intend to submit.
