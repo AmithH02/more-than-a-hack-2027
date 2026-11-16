@@ -106,3 +106,58 @@ def test_hmm_context_fits_and_predicts_with_hidden_ball(tmp_path, monkeypatch):
     np.testing.assert_array_equal(labels, hmm_context.predict(match))
     hmm_context._load.cache = None
     hmm_context._STATE_LOGP.clear()
+
+
+def _chain_score(path, E, T, k):
+    """Score of a 3-state path under viterbi_dead_min's model, or None if a stoppage that ends
+    inside the sequence is shorter than k. The first k - 1 frames of a stoppage cost nothing to
+    stay in; after that staying costs T[D, D]."""
+    score, run = E[0, path[0]], 1 if path[0] == hmm.D else 0
+    for t in range(1, len(path)):
+        a, b = path[t - 1], path[t]
+        if a == hmm.D and b == hmm.D:
+            score += 0.0 if run < k else T[hmm.D, hmm.D]
+            run += 1
+        else:
+            if a == hmm.D and run < k:
+                return None
+            score += T[a, b]
+            run = 1 if b == hmm.D else 0
+        score += E[t, b]
+    return score
+
+
+def test_viterbi_dead_min_matches_brute_force():
+    rng = np.random.default_rng(1)
+    T = np.log(rng.dirichlet(np.ones(3), size=3))
+    for k in (2, 3):
+        for _ in range(15):
+            E = rng.normal(size=(6, 3))
+            E[0, hmm.D] = -1e9                      # no stoppage at the very start
+            scored = [(s, p) for p in itertools.product(range(3), repeat=6)
+                      if (s := _chain_score(p, E, T, k)) is not None]
+            best = max(scored, key=lambda sp: sp[0])
+            got = tuple(hmm.viterbi_dead_min(E, T, k))
+            assert abs(_chain_score(got, E, T, k) - best[0]) < 1e-9
+
+
+def test_dead_min_removes_a_short_stoppage_and_keeps_a_long_one():
+    truth = "H" * 80 + "D" * 5 + "H" * 80 + "D" * 60 + "A" * 80
+    T = hmm.transitions(RATES, switch=0.3, dead=0.3)
+    plain = letters(hmm.viterbi(emissions(truth, 2.0), T))
+    chain = letters(hmm.viterbi_dead_min(emissions(truth, 2.0), T, 25))
+    assert plain == truth
+    assert chain == "H" * 165 + "D" * 60 + "A" * 80
+    assert letters(hmm.viterbi_dead_min(emissions(truth, 2.0), T, 1)) == plain
+
+
+def test_mlp_learns_an_interaction_and_is_deterministic():
+    from possession import learn, mlp
+    rng = np.random.default_rng(0)
+    X = rng.normal(size=(2000, 2))
+    y = (X[:, 0] * X[:, 1]) > 0                          # XOR-like: no straight line separates it
+    model = mlp.fit_mlp(X, y, hidden=16, steps=300, rate=0.05)
+    assert model == mlp.fit_mlp(X, y, hidden=16, steps=300, rate=0.05)
+    accuracy = np.mean((mlp.predict_proba(model, X) > 0.5) == y)
+    linear = np.mean((learn.predict_proba(learn.fit_logistic(X, y), X) > 0.5) == y)
+    assert accuracy > 0.9 and accuracy > linear + 0.2

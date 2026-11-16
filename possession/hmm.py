@@ -74,11 +74,70 @@ def viterbi(log_emit, log_trans, log_start=None):
     return path
 
 
-def decode(log_emit, log_trans, blocks, outside="D"):
+def viterbi_dead_min(log_emit, log_trans, k):
+    """(n,) int over H, A, D like viterbi(), but every stoppage entered lasts at least `k` frames.
+
+    D is a chain of k sub-states D1 -> D2 -> ... -> Dk; play goes into D1, only Dk may stay or
+    leave, and all sub-states share D's emission. A half may start inside a stoppage, so the
+    first frame may be in any sub-state. k = 1 is plain viterbi().
+    """
+    if k <= 1:
+        return viterbi(log_emit, log_trans)
+    E = np.asarray(log_emit, dtype=np.float64)
+    T = np.asarray(log_trans, dtype=np.float64)
+    n = len(E)
+    if n == 0:
+        return np.zeros(0, dtype=np.int64)
+    alive = E[0, :2].copy()                 # scores of H, A
+    dead = np.full(k, E[0, D])              # scores of D1..Dk
+    back_alive = np.empty((n, 2), dtype=np.int8)   # 0 = H, 1 = A, 2 = Dk
+    back_d1 = np.empty(n, dtype=np.int8)           # 0 = H, 1 = A
+    back_dk = np.empty(n, dtype=np.int8)           # 0 = D(k-1), 1 = Dk
+    cols = np.array([0, 1])
+    for t in range(1, n):
+        prev = np.array([alive[0], alive[1], dead[-1]])
+        cand = prev[:, None] + T[:, :2]                       # from H, A, D into H, A
+        b_alive = cand.argmax(axis=0)
+        new_alive = cand[b_alive, cols] + E[t, :2]
+        enter = alive + T[:2, D]
+        b_d1 = int(enter[1] > enter[0])
+        stay_prev, stay_self = dead[-2], dead[-1] + T[D, D]
+        b_dk = int(stay_self > stay_prev)
+        new_dead = np.empty(k)
+        new_dead[0] = enter[b_d1]
+        new_dead[1:-1] = dead[:-2]
+        new_dead[-1] = stay_self if b_dk else stay_prev
+        new_dead += E[t, D]
+        back_alive[t], back_d1[t], back_dk[t] = b_alive, b_d1, b_dk
+        alive, dead = new_alive, new_dead
+
+    # Backtrack over H, A, or D with a sub-state index 0..k-1.
+    path = np.empty(n, dtype=np.int64)
+    best = int(np.argmax(np.r_[alive, dead]))
+    state, sub = (best, None) if best < 2 else (D, best - 2)
+    for t in range(n - 1, -1, -1):
+        path[t] = state
+        if t == 0:
+            break
+        if state != D:
+            b = int(back_alive[t, state])
+            state, sub = (b, None) if b < 2 else (D, k - 1)
+        elif sub == 0:
+            state, sub = int(back_d1[t]), None
+        elif sub == k - 1:
+            sub = k - 2 if back_dk[t] == 0 else k - 1
+        else:
+            sub -= 1
+    return path
+
+
+def decode(log_emit, log_trans, blocks, outside="D", dead_min=1):
     """(n,) "H"/"A"/"D" labels: Viterbi on each block (first, last inclusive) separately, never
-    across halftime; frames outside every block get `outside`."""
+    across halftime; frames outside every block get `outside`. `dead_min` > 1: every stoppage
+    lasts at least that many frames (viterbi_dead_min)."""
     labels = np.full(len(log_emit), outside, dtype="<U1")
     letters = np.array(STATES)
     for first, last in blocks:
-        labels[first:last + 1] = letters[viterbi(log_emit[first:last + 1], log_trans)]
+        labels[first:last + 1] = letters[viterbi_dead_min(log_emit[first:last + 1], log_trans,
+                                                          dead_min)]
     return labels
