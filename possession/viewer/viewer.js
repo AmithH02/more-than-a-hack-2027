@@ -42,7 +42,13 @@
   } else {
     $("optTruth").disabled = true;
   }
-  var predictions = [];
+  // Predictions written into the page (other matches, possession/bench.py), then dropped CSVs.
+  var predictions = (M.predictions || []).map(function (p) {
+    var codes = new Uint8Array(N);
+    for (var j = 0; j < N; j++) codes[j] = Core.LABELS.indexOf(p.labels[j]);
+    return { name: p.name, codes: codes };
+  });
+  if (M.truth_on && truth) $("optTruth").checked = true;
   function allSeries() {
     return ($("optTruth").checked && truth ? [truth] : []).concat(predictions);
   }
@@ -713,6 +719,8 @@
   $("frameBox").max = N - 1;
   window.addEventListener("resize", layout);
   seriesChanged();
-  video.src = M.video.uri;
+  if (M.view) $("viewButtons").querySelector('[data-view="' + M.view + '"]').click();
+  if (M.video.uri) video.src = M.video.uri;
+  else $("videoMessage").textContent = "This match has no video.";
   requestAnimationFrame(tick);
 })();
