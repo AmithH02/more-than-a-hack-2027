@@ -166,6 +166,7 @@ class ExternalMatch:
         self.blocks = [(0, n1 - 1), (n1, self.n_frames - 1)]
         self.team_names = tuple(str(t) for t in arrays["team_names"])
         self.pitch = tuple(float(p) for p in arrays["pitch"])
+        self._team_shape = None
 
     def __repr__(self):
         return "ExternalMatch({}{})".format(
@@ -177,6 +178,15 @@ class ExternalMatch:
     track_xy = property(lambda self: self._a["track_xy"])
     track_speed = property(lambda self: self._a["track_speed"])
     track_team = property(lambda self: self._a["track_team"])
+
+    @property
+    def team_shape(self):
+        """The same as Match.team_shape, computed on first use and kept on this object."""
+        if self._team_shape is None:
+            from possession import team_shape
+            self._team_shape = team_shape.compute(self.track_xy, self.track_team, self.blocks,
+                                                  self.pitch)
+        return self._team_shape
 
     smart_tagging_codes = property(lambda self: np.array([], dtype=str))
     smart_tagging_team = property(lambda self: np.full((self.n_frames, 0), ST_NONE, dtype="<U1"))

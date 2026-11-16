@@ -32,4 +32,5 @@ parallel sessions never edit the same file. Each record has:
 | Issue | Experiment | Key proxy metrics | Verdict |
 |---|---|---|---|
 | — | `baseline_smooth50` (organisers') | published full-match spellF1 0.2433 | the floor to beat |
-| #20 | `nearest_smooth` (the same baseline, window from the bench) | bench val spellF1 0.184, macroF1 0.455 | the bench's reference point |
+| #20 | `nearest_smooth` (the same baseline, window from the bench) | bench val spellF1 0.184, macroF1 0.455 (degradation v1); 0.176 / 0.444 (v2) | the bench's reference point |
+| #22 | `players_fill` (ball gaps read from the team shape) | bench val spellF1 0.253, macroF1 0.521 (v2); BAR-ATH: Smart Tagging agreement 0.727 vs 0.714, sub-second possessions 15% vs 21% | candidate; the bench overstates its gain on BAR-ATH |

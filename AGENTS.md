@@ -45,6 +45,7 @@ commands.
 | `evaluation/` | the official scorer and validator | no, never |
 | `data/` | gated match data, gitignored; or point `MTAH_DATA_DIR` elsewhere | never commit |
 | `data/external/idsse/` | the other matches (IDSSE, open data), from `scripts/fetch_idsse.py` | never commit |
+| `possession/models/` | learned parameters (small JSON), written by `bench train` from the training split | yes, by regenerating them |
 | `possession/` | our code | yes |
 | `scripts/` | our helper scripts (e.g. the data check) | yes |
 | `experiments/` | one results record per experiment; see its README | yes |

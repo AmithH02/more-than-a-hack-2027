@@ -28,7 +28,12 @@ Write "none" if the method uses no labels._
   1.0 million frames at 25 Hz. Labels are the DFL's own per-frame ball status and ball possession,
   produced by the provider's data collection, not by us. Split into four training, one validation
   and two test matches (ADR 0003). The tracking is degraded to look like the ATD before any
-  method sees it: the ball is hidden in runs drawn from the ATD's own gap lengths.
+  method sees it: the ball is hidden in runs drawn from the ATD's own gap lengths, and the players
+  are broken into ATD-like tracklets (degradation v2).
+- Candidate `players_fill` (#22) fits two small logistic regressions on the training matches'
+  hidden-ball frames (about 130,000 frames, every fifth): alive or dead, and which side has the
+  ball, from side-level team-shape features. Their parameters are committed in
+  `possession/models/players_fill.json`.
 
 ## Possession rules implemented
 

@@ -66,7 +66,15 @@ starts using it.
 - **DFL labels**: `D` where the DFL says the ball is out of play, else its home/away possession.
   The provider's definition, close to but not the same as ours.
 - **Degradation**: making clean tracking look like the ATD before scoring on it (`degrade.py`).
-  Version 1 hides the ball in runs drawn from the ATD's own gap lengths. A **seed** fixes one draw.
+  Version 1 hides the ball in runs drawn from the ATD's own gap lengths; version 2 also breaks the
+  players into ATD-like tracklets. A **seed** fixes one draw.
+- **Ball gap**: a stretch of frames where the tracking has lost the ball.
+- **Team shape**: what the players say without the ball: each side's centre, spread, forward
+  movement and how many are running (`team_shape.py`). Side-level only, so it needs no player
+  identities. Every match has it as `match.team_shape`, a dict of per-frame columns (a cached
+  item on the Match).
+- **Players fill**: labelling a ball gap from the team shape instead of calling it dead
+  (`players_fill`): first alive or dead, then which side has it.
 - **Bench**: `python -m possession.bench`, an experiment scored with the official metrics on the
   other matches. **Train** split picks settings, **validation** compares candidates, **test** is
   touched once per candidate we intend to submit.

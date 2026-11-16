@@ -9,7 +9,9 @@
              --set window=75 run with these settings instead of the experiment's DEFAULT
 
 An experiment is benchable as it is: predict(match) must use only attributes ExternalMatch has.
-To be trainable it also defines GRID ({name: [values]}) and predict_with(match, **settings).
+To be trainable it also defines GRID ({name: [values]}) and predict_with(match, **settings). An
+experiment with learned parts also defines fit(matches, say): `train` calls it first, on the
+training matches (which carry labels), and the experiment saves what it learnt in the repo.
 
 Scores are the official ones (evaluation/possession_metrics.evaluate) after the same fill as the
 runner's step 5, averaged over matches and degradation seeds. Results go to
@@ -86,6 +88,9 @@ def train(module, matches, say):
     if not grid or not hasattr(module, "predict_with"):
         raise SystemExit("{} has no GRID and predict_with(); nothing to train".format(
             module.__name__))
+    if hasattr(module, "fit"):
+        say("  fitting {}'s models".format(module.__name__.rsplit(".", 1)[-1]))
+        module.fit(matches, say=say)
     names = list(grid)
     table = []
     for values in itertools.product(*(grid[n] for n in names)):

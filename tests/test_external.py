@@ -72,13 +72,17 @@ def test_parse_and_labels(tmp_path, monkeypatch):
     assert (again.labels == match.labels).all()
 
 
-def test_degrade_hides_only_the_ball_and_is_seeded(tmp_path):
+STATS = {"ball_present": np.array([3]), "ball_missing": np.array([2]),
+         "tracklets": np.array([4, 6]), "shortfall": np.array([20, 21, 21, 20]),
+         "slots_home": 3, "slots_away": 2}
+
+
+def test_degrade_v1_hides_only_the_ball_and_is_seeded(tmp_path):
     write_match(tmp_path / "data" / "J03WOY")
     match = external.load("J03WOY", data_dir=str(tmp_path / "data"),
                           cache_dir=str(tmp_path / "cache"))
-    runs = (np.array([3]), np.array([2]))
-    a = degrade.degrade(match, seed=1, runs=runs)
-    b = degrade.degrade(match, seed=1, runs=runs)
+    a = degrade.degrade(match, seed=1, version=1, stats=STATS)
+    b = degrade.degrade(match, seed=1, version=1, stats=STATS)
     hidden = np.isnan(a.ball_xy[:, 0])
     assert hidden.any() and not hidden.all()
     assert (hidden == np.isnan(b.ball_xy[:, 0])).all()
