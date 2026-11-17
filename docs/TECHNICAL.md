@@ -8,6 +8,26 @@ Markdown, not PDF: `*.pdf` is gitignored in this repo.
 
 _What we built, and why that rather than something else. To be filled once #5 decides the method._
 
+**Candidate from #26 (`hmm_final`), draft until #5 decides.** A classifier per frame, decoded as a
+sequence. For every frame, two logistic regressions give the probability that play is alive and,
+if so, that the home side has the ball; one pair for frames where the ATD tracks the ball and one
+for frames where it does not. A 3-state hidden Markov model (H, A, D) turns these into emission
+scores, and Viterbi finds the most likely sequence over each half, paying a penalty for every
+change of state. So possession only changes when the evidence for it holds up over time: that is
+what spellF1 rewards, where a majority vote leaves flicker and cannot say `D` while the ball is
+seen.
+
+The evidence comes from tracking only: each side's nearest player to the ball and the margin
+between them, ball speed, the ball off the pitch, the team shape (#22), control evidence averaged
+over ±0.5 s and ±2 s, how long the ball has been missing and which side was nearest either side of
+the gap, and most of all **the side of the last control before the frame and of the next one
+after it**, because possession stays with the side that last controlled the ball through passes
+and tracking gaps. The whole match is known when it is labelled, so looking ahead is fair.
+
+Models and settings are fitted on other matches with a full ground truth (IDSSE, ADR 0003), never
+on BAR-ATH. On the bench's held-out test matches: spellF1 0.479, macroF1 0.838 (organisers'
+baseline 0.176 / 0.444 on the same bench). What we tried and dropped: `experiments/26-hmm.md`.
+
 ## Assets used, and dropped
 
 | Asset | Used? | How / why not |

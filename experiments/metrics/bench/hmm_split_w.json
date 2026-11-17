@@ -1,0 +1,181 @@
+{
+  "train": {
+    "macro_f1": 0.8142533864780956,
+    "per_match": [
+      {
+        "alive_dead_f1": 0.9051934471941443,
+        "degraded": "v2/seed0",
+        "macro_f1": 0.8071332218493766,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 335.0,
+        "spell_f1_mean": 0.4687737041719342,
+        "team_acc_both_alive": 0.85271467077397
+      },
+      {
+        "alive_dead_f1": 0.9132441249585161,
+        "degraded": "v2/seed1",
+        "macro_f1": 0.8149571868502532,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 352.0,
+        "spell_f1_mean": 0.4608910891089109,
+        "team_acc_both_alive": 0.8515557505862348
+      },
+      {
+        "alive_dead_f1": 0.9219501461666615,
+        "degraded": "v2/seed2",
+        "macro_f1": 0.8206697507346571,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 342.0,
+        "spell_f1_mean": 0.43809523809523815,
+        "team_acc_both_alive": 0.8466825775656325
+      }
+    ],
+    "regime": "degraded v2 seeds [0, 1, 2]",
+    "settings": {
+      "dead": 1.0,
+      "dead_min": 1,
+      "switch": 0.5,
+      "w": 0.7,
+      "w_hidden": 0.4
+    },
+    "spell_f1_mean": 0.4559200104586944,
+    "split": "val",
+    "train_grid": [
+      {
+        "macro_f1": 0.8335301740403119,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 0.5,
+          "w_hidden": 0.2
+        },
+        "spell_f1_mean": 0.4651426827896524
+      },
+      {
+        "macro_f1": 0.8335445915650967,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 0.5,
+          "w_hidden": 0.4
+        },
+        "spell_f1_mean": 0.46621204484456175
+      },
+      {
+        "macro_f1": 0.8320179236361221,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 0.5,
+          "w_hidden": 0.7
+        },
+        "spell_f1_mean": 0.4621070373719231
+      },
+      {
+        "macro_f1": 0.8314661343819388,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 0.5,
+          "w_hidden": 1.0
+        },
+        "spell_f1_mean": 0.4611890954671864
+      },
+      {
+        "macro_f1": 0.8340366523641762,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 0.7,
+          "w_hidden": 0.2
+        },
+        "spell_f1_mean": 0.46672244130236235
+      },
+      {
+        "macro_f1": 0.833577388920832,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 0.7,
+          "w_hidden": 0.4
+        },
+        "spell_f1_mean": 0.46747940173246844
+      },
+      {
+        "macro_f1": 0.8321132678110118,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 0.7,
+          "w_hidden": 0.7
+        },
+        "spell_f1_mean": 0.46279107144053233
+      },
+      {
+        "macro_f1": 0.8315685451992662,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 0.7,
+          "w_hidden": 1.0
+        },
+        "spell_f1_mean": 0.4620822324436793
+      },
+      {
+        "macro_f1": 0.8337161635688224,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 1.0,
+          "w_hidden": 0.2
+        },
+        "spell_f1_mean": 0.4633478871421149
+      },
+      {
+        "macro_f1": 0.8332183207438076,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 1.0,
+          "w_hidden": 0.4
+        },
+        "spell_f1_mean": 0.46401072033748986
+      },
+      {
+        "macro_f1": 0.8317144493963289,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 1.0,
+          "w_hidden": 0.7
+        },
+        "spell_f1_mean": 0.45965570704496206
+      },
+      {
+        "macro_f1": 0.8311398058109197,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 1.0,
+          "w_hidden": 1.0
+        },
+        "spell_f1_mean": 0.45888445987931004
+      }
+    ]
+  }
+}
