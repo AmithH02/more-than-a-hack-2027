@@ -1,0 +1,88 @@
+{
+  "train": {
+    "macro_f1": 0.8147236261253225,
+    "per_match": [
+      {
+        "alive_dead_f1": 0.9065319379285457,
+        "degraded": "v2/seed0",
+        "macro_f1": 0.8083021556995779,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 320.0,
+        "spell_f1_mean": 0.46340206185567007,
+        "team_acc_both_alive": 0.8524873709641995
+      },
+      {
+        "alive_dead_f1": 0.9130575952844797,
+        "degraded": "v2/seed1",
+        "macro_f1": 0.8144563047634782,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 334.0,
+        "spell_f1_mean": 0.45316455696202523,
+        "team_acc_both_alive": 0.8513964493804196
+      },
+      {
+        "alive_dead_f1": 0.922533793138168,
+        "degraded": "v2/seed2",
+        "macro_f1": 0.821412417912911,
+        "match": "J03WOY",
+        "n_gt_spells": 456.0,
+        "n_pred_spells": 317.0,
+        "spell_f1_mean": 0.4362225097024579,
+        "team_acc_both_alive": 0.846805549871076
+      }
+    ],
+    "regime": "degraded v2 seeds [0, 1, 2]",
+    "settings": {
+      "dead": 1.0,
+      "dead_min": 1,
+      "switch": 0.5,
+      "w": 0.4
+    },
+    "spell_f1_mean": 0.45092970950671774,
+    "split": "val",
+    "train_grid": [
+      {
+        "macro_f1": 0.8337956255526477,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 0.4
+        },
+        "spell_f1_mean": 0.46258291189995693
+      },
+      {
+        "macro_f1": 0.8331314856462786,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 1.0,
+          "w": 0.4
+        },
+        "spell_f1_mean": 0.4524955279529544
+      },
+      {
+        "macro_f1": 0.8324144120362873,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 0.5,
+          "w": 0.7
+        },
+        "spell_f1_mean": 0.46217340137288465
+      },
+      {
+        "macro_f1": 0.832425000664784,
+        "settings": {
+          "dead": 1.0,
+          "dead_min": 1,
+          "switch": 1.0,
+          "w": 0.7
+        },
+        "spell_f1_mean": 0.4571337393978589
+      }
+    ]
+  }
+}
