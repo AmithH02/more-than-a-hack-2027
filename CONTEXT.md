@@ -97,3 +97,7 @@ starts using it.
   the items it is built from, so any upstream change gives a new key.
 - **Track slot**: one of the 46 track columns of the ATD, each fixed to one side (`track_team`).
   A slot holds a series of tracks over the match, not one player.
+- **Keeper slot**: the one slot of each side that the ATD's metadata marks as the keeper's
+  (Track 24 home, Track 46 away). Either keeper's tracks can land in either keeper slot.
+- **Fixed side** (`track_team_fixed`): a slot's side on each frame, with every track of a keeper
+  slot given to the side defending the end it stands in (`possession/keepers.py`).

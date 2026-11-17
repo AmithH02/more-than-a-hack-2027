@@ -180,6 +180,13 @@ class ExternalMatch:
     track_team = property(lambda self: self._a["track_team"])
 
     @property
+    def track_team_fixed(self):
+        """The Match's per-frame sides. The DFL's own sides are right, keepers included, and its
+        slots are not the ATD's keeper slots, so this is track_team on every frame (read-only)."""
+        team = np.asarray(self.track_team)
+        return np.broadcast_to(team[None, :], (self.n_frames, len(team)))
+
+    @property
     def team_shape(self):
         """The same as Match.team_shape, computed on first use and kept on this object."""
         if self._team_shape is None:

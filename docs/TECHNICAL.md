@@ -35,6 +35,25 @@ Write "none" if the method uses no labels._
   ball, from side-level team-shape features. Their parameters are committed in
   `possession/models/players_fill.json`.
 
+## Keepers on the right side
+
+The ATD files a keeper under the wrong team on about 6% of the graded frames its keeper slots
+track (17,405 of 294,534).
+Its metadata gives each side one keeper slot (Track 24 home, Track 46 away), and the two keepers'
+tracklets land in either: a keeper standing in his own goal is often in the other side's slot,
+sometimes while his own slot tracks him too. A slot's side is fixed, so the keeper counts for the
+wrong team exactly when he has the ball (saves, goal kicks, build-up).
+
+The rule (`possession/keepers.py`, `match.track_team_fixed`): each tracklet of a keeper slot
+belongs to the side defending the end it stands in (its median x, cut at the halves). Which side
+defends which end is read at each half's kick-off, tagged by Smart Tagging, where every player is
+in their own half: the lower median x of the outfield slots defends x = 0. Outfield slots are left
+alone: only 3 outfield tracklets of 10 s or more live in the other side's keeper area.
+
+On BAR-ATH's graded frames this moves 17,405 tracked slot-frames (16,392 of them in the away
+keeper slot) and changes the nearest player's side on 1,306 of the 94,214 frames with a ball.
+The team-shape features still use the metadata's sides.
+
 ## Possession rules implemented
 
 _Where we drew the line on loose balls, challenges, deflections, aerial duels and restarts. Use the
