@@ -175,3 +175,12 @@ def test_restart_hint_points_to_the_other_side_and_fades():
     assert 0 > hint[12] > hint[7]                      # and it fades
     np.testing.assert_array_equal(hint_out, hint)      # the ball was seen out
     assert log_since[7] == 0.0
+
+
+def test_rich_run_lengths_and_spots():
+    from possession.experiments import hmm_rich
+    before, after = hmm_rich.run_lengths(np.array([0, 1, 1, 1, 0, 1], dtype=bool))
+    assert list(before) == [0, 1, 2, 3, 0, 1]
+    assert list(after) == [0, 3, 2, 1, 0, 1]
+    d = hmm_rich.spot_distance(np.array([0.5, 52.5, 30.0]), np.array([0.0, 34.0, 20.0]), 105, 68)
+    assert d[0] == 0.5 and d[1] == 0.0 and d[2] > 10
