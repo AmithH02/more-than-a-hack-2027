@@ -95,6 +95,32 @@ def read_teams(meta_path):
     return (teams[0][1], teams[1][1]), np.array([side[t] for t in slots], dtype="<U1")
 
 
+def read_keeper_slots(meta_path):
+    """Indices of the track slots the ATD metadata marks as a keeper's (position_type
+    "Goalkeeper"), in file order."""
+    root = ET.parse(meta_path).getroot()
+    slots = []
+    for index, player in enumerate(root.iter("Player")):
+        for parameter in player.iter("ProviderParameter"):
+            if (parameter.findtext("Name") == "position_type"
+                    and parameter.findtext("Value") == "Goalkeeper"):
+                slots.append(index)
+    return np.array(slots, dtype=np.int64)
+
+
+KICKOFF_CODE = "SET PIECES: Kick Off (Start)"
+
+
+def kickoff_frames(codes, phase, halves):
+    """The first frame of the Smart Tagging "Kick Off (Start)" phase nearest each half's start."""
+    codes = list(codes)
+    if KICKOFF_CODE not in codes:
+        raise ValueError("Smart Tagging has no {!r} phase".format(KICKOFF_CODE))
+    on = np.flatnonzero(phase[:, codes.index(KICKOFF_CODE)])
+    starts = on[np.concatenate(([0], np.flatnonzero(np.diff(on) > 1) + 1))]
+    return [int(starts[np.argmin(np.abs(starts - first))]) for first, _ in halves]
+
+
 def smart_tagging_code(event):
     """Column name for an event. Set pieces are split by type: a throw-in is not a corner."""
     code = event["code"]
@@ -152,6 +178,20 @@ def _build_team_shape(inputs):
                               games.GAMES[games.GAME]["pitch"])
 
 
+def _build_track_team_fixed(inputs):
+    from possession import keepers
+    from possession.fill import half_blocks
+
+    xy = inputs.item("tracking")["track_xy"]
+    team = inputs.item("track_team")
+    slots = read_keeper_slots(inputs.path(SOURCE, "atd_meta"))
+    tagging = inputs.item("smart_tagging")
+    halves = half_blocks()
+    home_low = [keepers.home_defends_low_x(xy, team, frame, slots)
+                for frame in kickoff_frames(tagging["codes"], tagging["team"] != ST_NONE, halves)]
+    return keepers.fix(xy, team, slots, halves, home_low, games.GAMES[games.GAME]["pitch"][0])
+
+
 def _build_smart_tagging(inputs):
     from starter import load_smart_tagging  # organisers' loader: imported, never edited
 
@@ -161,6 +201,7 @@ def _build_smart_tagging(inputs):
     return paint_smart_tagging(events, team_names, games.source_frames(SOURCE))
 
 
+from possession.keepers import VERSION as _KEEPERS_VERSION  # noqa: E402
 from possession.team_shape import VERSION as _TEAM_SHAPE_VERSION  # noqa: E402
 
 # The cache items. A Match attribute may expose one array of an item.
@@ -177,6 +218,9 @@ ITEMS = {item.name: item for item in (
     Item("smart_tagging", version=1, build=_build_smart_tagging,
          raw=((SOURCE, "smart_tagging"), (SOURCE, "atd_meta")),
          doc="Smart Tagging phases and their team, per frame and code"),
+    Item("track_team_fixed", version=_KEEPERS_VERSION, build=_build_track_team_fixed,
+         raw=((SOURCE, "atd_meta"),), deps=("tracking", "track_team", "smart_tagging"),
+         doc="side of each track slot on each frame, keepers put right (possession/keepers.py)"),
 )}
 
 
@@ -239,6 +283,12 @@ class Match:
     def track_team(self):
         """(n_tracks,) str: "H" or "A" for each track slot."""
         return self.item("track_team")
+
+    @property
+    def track_team_fixed(self):
+        """(n_frames, n_tracks) str: "H" or "A" for each slot on each frame, with the keeper slots'
+        tracklets given to the side defending the end they stand in (possession/keepers.py)."""
+        return self.item("track_team_fixed")
 
     # Team shape: what the players say, side by side, ball or no ball.
 
