@@ -13,8 +13,7 @@ GitHub board and in issue comments, never here.**
 - Inputs: automatic, uncorrected tracking (ATD, ball missing on 41% of graded frames), Smart
   Tagging, homography, video. Organiser docs: [CHALLENGE.md](CHALLENGE.md), [DATA.md](DATA.md),
   [EVALUATION.md](EVALUATION.md), [RULES.md](RULES.md), [SUBMISSION.md](SUBMISSION.md).
-- Deadline: **17 November 2026**. Method frozen 15 November; 16 November is for the technical
-  document and the reproducibility check.
+- Deadline: **17 November 2026**.
 
 ## Our team
 
