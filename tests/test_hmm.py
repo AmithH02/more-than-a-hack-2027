@@ -161,3 +161,17 @@ def test_mlp_learns_an_interaction_and_is_deterministic():
     accuracy = np.mean((mlp.predict_proba(model, X) > 0.5) == y)
     linear = np.mean((learn.predict_proba(learn.fit_logistic(X, y), X) > 0.5) == y)
     assert accuracy > 0.9 and accuracy > linear + 0.2
+
+
+def test_restart_hint_points_to_the_other_side_and_fades():
+    from possession.experiments import hmm_restart
+    labels = np.array(list("HHHHDDDAAAAAA"))
+    last_control = np.array([1.0] * 4 + [1.0] * 3 + [-1.0] * 6)   # home touched it last
+    ball_out = np.zeros(13, dtype=bool)
+    ball_out[5] = True
+    hint, hint_out, log_since = hmm_restart.restart_hints(labels, last_control, ball_out)
+    assert (hint[:7] == 0).all()                       # nothing before the restart
+    assert hint[7] == -1.0                             # away restarts, at full strength
+    assert 0 > hint[12] > hint[7]                      # and it fades
+    np.testing.assert_array_equal(hint_out, hint)      # the ball was seen out
+    assert log_since[7] == 0.0
