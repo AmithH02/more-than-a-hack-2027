@@ -122,9 +122,18 @@ class HmmModels:
         self._logp[match] = logp
         return logp
 
-    def predict_with(self, match, w, switch, dead, dead_min=1):
+    def emissions(self, match, w, w_hidden=None):
+        """(n, 3) emission scores: w * (log p(state) - log prior), with `w_hidden` (default: w)
+        on the frames where the ball is not tracked."""
         models = self.load()
         log_prior = np.log([models["prior"][s] for s in hmm.STATES])
-        log_emit = w * (self.state_logp(match) - log_prior)
+        weight = np.full(match.n_frames, float(w))
+        if w_hidden is not None:
+            weight[np.isnan(np.asarray(match.ball_xy)[:, 0])] = w_hidden
+        return weight[:, None] * (self.state_logp(match) - log_prior)
+
+    def predict_with(self, match, w, switch, dead, dead_min=1, w_hidden=None):
+        models = self.load()
         T = hmm.transitions(models["rates"], switch=switch, dead=dead)
-        return hmm.decode(log_emit, T, team_shape.blocks_of(match), dead_min=dead_min)
+        return hmm.decode(self.emissions(match, w, w_hidden), T, team_shape.blocks_of(match),
+                          dead_min=dead_min)
